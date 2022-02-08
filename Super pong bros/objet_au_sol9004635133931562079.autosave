@@ -1,0 +1,68 @@
+class Objet_au_sol {
+    PVector pos;
+    PVector vel;
+    PVector acc;
+    int size;
+    String objet_type;
+    boolean dead;
+
+    Objet_au_sol(PVector pos_, PVector vel_,PVector acc_, int size_, String objet_type_) {
+        pos = pos_;
+        vel = vel_;
+        acc = acc_;
+        size = size_;
+        objet_type = objet_type_;
+        dead = false;
+    }
+
+    void update () {
+        pos.add(vel);
+        vel.add(acc);
+        if (pos.x + size/2 < player1.pos.x || pos.x + size/2 > player2.pos.x + player2.weed) {
+            dead = true;
+        } 
+        if (pos.y + size >= height) {
+            acc.y = 0;
+            vel.y = 0;
+            pos.y = height - size;
+        }
+        collision_platform();
+    }
+    void show () {
+        stroke(0);
+        red_champ.resize(size,size);
+        green_champ.resize(size,size);
+        if (objet_type == "red_champ") {
+            image(red_champ,pos.x,pos.y);
+        }
+        else if (objet_type == "green_champ") {
+            image(green_champ,pos.x,pos.y);
+        }
+    }
+    void collision_platform() {
+        if (vel.x > 0) {
+            if (pos.x + size >= player2.pos.x && pos.y + size/2 > player2.pos.y && pos.y + size/2 < player2.pos.y + player2.heil) {
+                dead = true;
+                if (objet_type == "red_champ") {
+                    heil *=1.5;
+                    player2.heil = heil;
+                }
+                else if (objet_type == "green_champ") {
+                    score2 -=1;
+                }
+            }
+        }
+        else {
+            if (pos.x <= player1.pos.x + player1.weed && pos.y + size/2 > player1.pos.y && pos.y + size/2 < player1.pos.y + player1.heil) {
+                
+                if (objet_type == "red_champ") {
+                    heil *=1.5;
+                    player1.heil = heil;
+                }
+                else if (objet_type == "green_champ") {
+                    score1 -=1;
+                }
+            }
+        }
+    }
+}
